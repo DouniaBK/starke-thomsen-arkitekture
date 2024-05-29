@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block profile %}
+
+
+<title>Profile</title>
+<div id="body-form">
+    <div class="content_main" id="col-form">
+        <!-- Error message -->
+        {% if form.errors %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            There was an error with your form...
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+        <!-- Custom Error message -->
+        {% for e in user_error_msg %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{e}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+
+
+
+        <div class="container-fluid" id="scheduler-container">
+            <!-- Profile Form -->
+            <h3 class="pb-2 mb-4 underlined text-center">Profile Settings</h3>
+
+            <form method="POST" name="user_profile" action="{% url 'user_profile' %}">
+                {% csrf_token %}
+                <div class="form-profile">
+                    {{ form.as_p }}
+                </div>
+
+                {% if is_edit %}
+                <div style="display:flex; width: 100%; justify-content: space-between;">
+                    <a class="btn btn-primary btn-form" href="{% url 'user_profile' %}">Cancel</a>
+                    <button type="submit" class="btn btn-primary btn-form" name="booking">Save</button>
+                </div>
+
+                {% else %}
+                <a class="btn btn-primary btn-block btn-form"
+                    href="{% url 'user_profile' %}?edit=true">Edit Profile</a>
+                {% endif %}
+            </form>
+
+            <hr />
+            <!-- Delete Account Section -->
+            <h4 class="pt-4">Delete Account</h4>
+            <p class="pb-4">Are you sure you want to permanently delete your account? </p>
+            <form method="POST" name="user_delete" action="{% url 'user_profile' %}">
+                {% csrf_token %}
+                <!-- Without a valid password the user is not able to delete their account -->
+                {% if is_delete %}
+                <div style="display:flex; width: 100%; justify-content: space-between;">
+                    <label for="pwd_for_delete">Enter your password to confirm account deletion:</label><br>
+                    <input type="password" id="pwd_for_delete" name="pwd_for_delete" placeholder="Password"><br>
+                    <button type="submit" class="btn btn-primary" name="Delete Account Now">Delete Account Now</button>
+                </div>
+
+                {% else %}
+                <a class="btn btn-primary btn-block btn-form"
+                    href="{% url 'user_profile' %}?delete=true">Delete My Account</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock profile %}
